@@ -1,0 +1,27 @@
+{$DOMAIN}:443 {
+        log {
+                level INFO
+                output file {$LOG_FILE} {
+                        roll_size 10MB
+                        roll_keep 10
+                }
+        }
+
+        # Use the ACME DNS-01 challenge to get a cert for the configured domain.
+        tls {
+                dns alidns {
+                        access_key_id {$ALIYUN_ACCESS_KEY_ID}
+                        access_key_secret {$ALIYUN_ACCESS_KEY_SECRET}
+                }
+        }
+
+        # This setting may have compatibility issues with some browsers
+        # (e.g., attachment downloading on Firefox). Try disabling this
+        # if you encounter issues.
+        encode gzip
+
+        # Proxy everything to Rocket
+        reverse_proxy vaultwarden:80 {
+                header_up X-Real-IP {remote_host}
+        }
+}

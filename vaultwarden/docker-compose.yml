@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: always
+    environment:
+      DOMAIN: "${DOMAIN}"  # Your domain; vaultwarden needs to know it's https to work properly with attachments
+    volumes:
+      - ./vw-data:/data
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./caddy:/usr/bin/caddy  # Your custom build of Caddy.
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy-config:/config
+      - ./caddy-data:/data
+    environment:
+      DOMAIN: "${DOMAIN}"  # Your domain.
+      EMAIL: "${EMAIL}"        # The email address to use for ACME registration.
+      LOG_FILE: "${LOG_FILE}"
+      ALIYUN_ACCESS_KEY_ID: "${ALIYUN_ACCESS_KEY_ID}"
+      ALIYUN_ACCESS_KEY_SECRET: "${ALIYUN_ACCESS_KEY_SECRET}"
