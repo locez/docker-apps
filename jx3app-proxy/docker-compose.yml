@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  caddy:
+    image: caddy
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "443:44443"
+      - "44443:44443"
+      - "44443:443/udp"
+    volumes:
+      - $PWD/certs:/etc/certs
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - caddy-reverse-jx3app_caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy-reverse-jx3app_caddy_data:
+    external: true
+  caddy_config:
+  
