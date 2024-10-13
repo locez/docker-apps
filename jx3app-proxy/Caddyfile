@@ -1,0 +1,31 @@
+{
+    http_port 80
+    https_port 44443
+}
+
+jx3app.proxy.locez.com:44443
+tls /etc/certs/jx3app.proxy.locez.com.pem /etc/certs/jx3app.proxy.locez.com.key
+reverse_proxy https://m.pvp.xoyo.com {
+
+        header_up Host {upstream_hostport}
+       # transport http {
+       #   tls_insecure_skip_verify
+       # }
+}
+
+@cors_preflight {
+    method OPTIONS
+    header Origin *
+}
+
+handle @cors_preflight {
+    respond 204
+    header Access-Control-Allow-Origin "*"
+    header Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    header Access-Control-Allow-Headers "*"
+}
+
+header {
+    Access-Control-Allow-Origin *
+    Access-Control-Allow-Methods "GET, POST, OPTIONS"
+}
